@@ -72,7 +72,7 @@ export const mockFacultyData: FacultyMember[] = [
   },
   {
     id: 'CSE004',
-    name: 'Dr.S.Sendhil Kumar',
+    name: 'Dr.S.Senthil Kumar',
     designation: 'Associate Professor',
     department: 'Computer Science',
     rdProposalsSangsation: 7,

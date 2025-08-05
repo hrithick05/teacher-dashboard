@@ -14,6 +14,8 @@ import FacultyLogin from "./pages/FacultyLogin";
 import FacultyAuth from "./pages/FacultyAuth";
 import AddFaculty from "./pages/AddFaculty";
 import FacultyDetails from "./pages/FacultyDetails";
+import TopPerformer from "./TopPerformer/TopPerformer";
+import FacultyStats from "./TopPerformer/FacultyStats";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +40,8 @@ const App = () => {
               <Route path="/faculty-auth" element={<FacultyAuth />} />
               <Route path="/add-faculty" element={<AddFaculty />} />
               <Route path="/faculty-details/:id" element={<FacultyDetails />} />
+              <Route path="/top-performer" element={<TopPerformer data={[]} />} />
+              <Route path="/faculty-stats/:id" element={<FacultyStats />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
