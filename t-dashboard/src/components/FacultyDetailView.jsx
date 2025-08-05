@@ -3,29 +3,29 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  LogOut, 
-  User, 
-  Award, 
-  BookOpen, 
-  Lightbulb, 
-  Users, 
-  FileText,
-  Trophy,
-  GraduationCap,
-  Building,
-  Edit
-} from "lucide-react";
+import { LogOut, User, Award, BookOpen, Lightbulb, Users, Trophy, GraduationCap, Building, Edit } from "lucide-react";
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
-const FacultyDetailView = ({ faculty, onLogout, onUpdateAchievement }) => {
+const FacultyDetailView = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  // Load faculty data from localStorage
+  const faculty = JSON.parse(localStorage.getItem('loggedInFaculty') || '{}');
+  
   const [isEditing, setIsEditing] = useState(false);
   const [editedFaculty, setEditedFaculty] = useState(faculty);
-  const { toast } = useToast();
+
+  // If no faculty data, redirect to login
+  if (!faculty || !faculty.id) {
+    navigate('/login');
+    return null;
+  }
 
   const handleSave = () => {
-    onUpdateAchievement(editedFaculty);
+    localStorage.setItem('loggedInFaculty', JSON.stringify(editedFaculty));
     setIsEditing(false);
     toast({
       title: "Success",
@@ -39,10 +39,7 @@ const FacultyDetailView = ({ faculty, onLogout, onUpdateAchievement }) => {
   };
 
   const updateField = (field, value) => {
-    setEditedFaculty(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setEditedFaculty(prev => ({ ...prev, [field]: value }));
   };
 
   const achievementCategories = [
@@ -98,8 +95,7 @@ const FacultyDetailView = ({ faculty, onLogout, onUpdateAchievement }) => {
     }
   ];
 
-  const totalAchievements = Object.values(faculty).reduce((sum, val) => 
-    typeof val === 'number' ? sum + val : sum, 0);
+  const totalAchievements = Object.values(faculty).reduce((sum, val) => typeof val === 'number' ? sum + val : sum, 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/10">
@@ -150,7 +146,7 @@ const FacultyDetailView = ({ faculty, onLogout, onUpdateAchievement }) => {
               </Button>
               <Button 
                 variant="outline" 
-                onClick={() => window.location.href = '/home'}
+                onClick={() => navigate('/dashboard')}
                 className="bg-white/20 border-white/30 text-primary-foreground hover:bg-white/30"
               >
                 <LogOut className="w-4 h-4 mr-2" />

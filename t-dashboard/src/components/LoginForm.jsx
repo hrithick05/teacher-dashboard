@@ -1,25 +1,30 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { LogIn, User, IdCard } from "lucide-react";
 
-const LoginForm = ({ facultyData, onLogin }) => {
+import { mockFacultyData } from '../data/mockFaculty';
+
+const LoginForm = () => {
   const [name, setName] = useState('');
   const [facultyId, setFacultyId] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
     setError('');
 
-    const faculty = facultyData.find(
+    const faculty = mockFacultyData.find(
       f => f.name.toLowerCase() === name.toLowerCase() && f.id.toLowerCase() === facultyId.toLowerCase()
     );
 
     if (faculty) {
-      onLogin(faculty);
+      localStorage.setItem('loggedInFaculty', JSON.stringify(faculty));
+      navigate('/dashboard');
     } else {
       setError('Invalid faculty name or ID. Please check your credentials.');
     }
@@ -48,7 +53,7 @@ const LoginForm = ({ facultyData, onLogin }) => {
               <Input
                 id="name"
                 type="text"
-                placeholder="Enter your full name (e.g., Dr. Sarah Johnson)"
+                placeholder="Enter your full name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -63,7 +68,7 @@ const LoginForm = ({ facultyData, onLogin }) => {
               <Input
                 id="facultyId"
                 type="text"
-                placeholder="Enter your ID (e.g., CSE001)"
+                placeholder="Enter your ID"
                 value={facultyId}
                 onChange={(e) => setFacultyId(e.target.value)}
                 required
@@ -79,18 +84,7 @@ const LoginForm = ({ facultyData, onLogin }) => {
             <Button type="submit" className="w-full">
               Login to Dashboard
             </Button>
-            <Button type="button" className="w-full mt-2" variant="outline" onClick={() => window.location.href = '/'}>
-              Back
-            </Button>
           </form>
-
-          <div className="mt-6 p-4 bg-muted rounded-lg">
-            <p className="text-sm text-muted-foreground font-medium mb-2">Sample Credentials:</p>
-            <div className="text-sm space-y-1">
-              <div><strong>Name:</strong> Dr. Sarah Johnson</div>
-              <div><strong>ID:</strong> CSE001</div>
-            </div>
-          </div>
         </CardContent>
       </Card>
     </div>
