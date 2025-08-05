@@ -103,6 +103,13 @@ const Index = ({ theme, toggleTheme }) => {
                   </button>
                 )}
                 <button
+                  onClick={() => navigate('/top-performer')}
+                  className="bg-blue-600 border border-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 dark:bg-blue-500 dark:border-blue-600 dark:hover:bg-blue-600"
+                >
+                  <Award className="w-4 h-4" />
+                  View Top Scorer
+                </button>
+                <button
                   onClick={toggleTheme}
                   className="bg-white/20 border border-white/30 text-primary-foreground px-4 py-2 rounded-lg hover:bg-white/30 transition-colors flex items-center gap-2 dark:bg-gray-700 dark:border-gray-500 dark:text-white dark:hover:bg-gray-600"
                   aria-label="Toggle theme"
