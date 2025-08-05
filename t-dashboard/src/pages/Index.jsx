@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, BookOpen, Award, TrendingUp } from 'lucide-react';
 import DashboardHeader from '../components/DashboardHeader';
@@ -20,8 +20,10 @@ const Index = ({ theme, toggleTheme }) => {
   // Separate target and non-target data
   const targetRow = facultyData.find(f => f.id === 'TARGET');
   const nonTargetFaculty = facultyData.filter(f => f.id !== 'TARGET');
-  const [loggedInFaculty, setLoggedInFaculty] = useState(null);
-  const [viewMode, setViewMode] = useState('overview');
+  const [loggedInFaculty, setLoggedInFaculty] = useState(() => {
+    const stored = localStorage.getItem('loggedInFaculty');
+    return stored ? JSON.parse(stored) : null;
+  });
   const { toast } = useToast();
 
   // Calculate summary statistics
@@ -34,24 +36,6 @@ const Index = ({ theme, toggleTheme }) => {
   const totalAchievements = facultyData.reduce((sum, faculty) => 
     sum + faculty.rdProposals + faculty.journalPublications + faculty.patents + 
     faculty.studentProjects + faculty.industryCollabs + faculty.otherActivities, 0);
-
-  const handleLogin = (faculty) => {
-    setLoggedInFaculty(faculty);
-    setViewMode('detail');
-    toast({
-      title: "Login Successful",
-      description: `Welcome back, ${faculty.name}!`,
-    });
-  };
-
-  const handleLogout = () => {
-    setLoggedInFaculty(null);
-    setViewMode('overview');
-    toast({
-      title: "Logged Out",
-      description: "You have been successfully logged out.",
-    });
-  };
 
   const handleUpdateAchievement = (updatedFaculty) => {
     setFacultyData(prev => 
@@ -69,7 +53,6 @@ const Index = ({ theme, toggleTheme }) => {
 
   const handleViewDetails = (faculty) => {
     setLoggedInFaculty(faculty);
-    setViewMode('detail');
     toast({
       title: "Faculty Details",
       description: `Viewing detailed achievements for ${faculty.name}`,
@@ -84,33 +67,7 @@ const Index = ({ theme, toggleTheme }) => {
   };
 
   const navigate = useNavigate();
-  const showLoginForm = () => {
-    navigate('/faculty-login');
-  };
 
-  // Render based on view mode
-  if (viewMode === 'login') {
-    console.log('Rendering login mode');
-    return (
-      <LoginForm 
-        facultyData={facultyData}
-        onLogin={handleLogin}
-      />
-    );
-  }
-
-  if (viewMode === 'detail' && loggedInFaculty) {
-    console.log('Rendering detail mode');
-    return (
-      <FacultyDetailView
-        faculty={loggedInFaculty}
-        onLogout={handleLogout}
-        onUpdateAchievement={handleUpdateAchievement}
-      />
-    );
-  }
-
-  console.log('Rendering overview mode');
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/10 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
@@ -128,13 +85,23 @@ const Index = ({ theme, toggleTheme }) => {
                 </div>
               </div>
               <div className="flex gap-2">
-                <button
-                  onClick={showLoginForm}
-                  className="bg-white/20 border border-white/30 text-primary-foreground px-4 py-2 rounded-lg hover:bg-white/30 transition-colors flex items-center gap-2 dark:bg-gray-700 dark:border-gray-500 dark:text-white dark:hover:bg-gray-600"
-                >
-                  <Users className="w-4 h-4" />
-                  Faculty Login
-                </button>
+                {loggedInFaculty ? (
+                  <button
+                    onClick={() => navigate('/details')}
+                    className="bg-white/20 border border-white/30 text-primary-foreground px-4 py-2 rounded-lg hover:bg-white/30 transition-colors flex items-center gap-2 dark:bg-gray-700 dark:border-gray-500 dark:text-white dark:hover:bg-gray-600"
+                  >
+                    <Users className="w-4 h-4" />
+                    View My Details
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => navigate('/login')}
+                    className="bg-white/20 border border-white/30 text-primary-foreground px-4 py-2 rounded-lg hover:bg-white/30 transition-colors flex items-center gap-2 dark:bg-gray-700 dark:border-gray-500 dark:text-white dark:hover:bg-gray-600"
+                  >
+                    <Users className="w-4 h-4" />
+                    Faculty Login
+                  </button>
+                )}
                 <button
                   onClick={() => navigate('/top-performer')}
                   className="bg-blue-600 border border-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 dark:bg-blue-500 dark:border-blue-600 dark:hover:bg-blue-600"
