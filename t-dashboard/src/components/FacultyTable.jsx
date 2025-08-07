@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, Edit, Eye, Plus } from "lucide-react";
+import { Search, Filter, Edit, Eye, Plus, BarChart3 } from "lucide-react";
 import { achievementTypes } from '../data/mockFaculty';
 
 const FacultyTable = ({ 
@@ -14,6 +15,7 @@ const FacultyTable = ({
   onViewDetails, 
   onAddFaculty 
 }) => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAchievement, setSelectedAchievement] = useState('all');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
@@ -43,6 +45,11 @@ const FacultyTable = ({
     if (achievementKey === 'all') return null;
     return filteredFaculty.reduce((top, faculty) => 
       faculty[achievementKey] > (top?.[achievementKey] || 0) ? faculty : top, null);
+  };
+
+  // Handle view individual graph
+  const handleViewGraph = (faculty) => {
+    navigate(`/faculty-stats/${faculty.id}`);
   };
 
   return (
@@ -140,6 +147,8 @@ const FacultyTable = ({
                 <TableHead className="font-semibold text-center dark:text-white">Patents</TableHead>
                 <TableHead className="font-semibold text-center dark:text-white">Online Certifications</TableHead>
                 <TableHead className="font-semibold text-center dark:text-white">Student Projects</TableHead>
+                <TableHead className="font-semibold text-center dark:text-white">FDP Works</TableHead>
+                <TableHead className="font-semibold text-center dark:text-white">FDP Worps</TableHead>
                 <TableHead className="font-semibold text-center dark:text-white">Industry Collaborations</TableHead>
                 <TableHead className="font-semibold text-center dark:text-white">Other Activities</TableHead>
                 <TableHead className="font-semibold text-center dark:text-white">Actions</TableHead>
@@ -165,34 +174,35 @@ const FacultyTable = ({
                       {faculty.department}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-center dark:text-white">{faculty.rdProposalsSangsation ?? ''}</TableCell>
-                  <TableCell className="text-center dark:text-white">{faculty.rdProposalsSubmition ?? ''}</TableCell>
-                  <TableCell className="text-center dark:text-white">{faculty.academicPassPercentage ?? '90%'}</TableCell>
-                  <TableCell className="text-center dark:text-white">{faculty.effectiveMentoring ?? 'Yes'}</TableCell>
-                  <TableCell className="text-center dark:text-white">{faculty.rdFunding}</TableCell>
-                  <TableCell className="text-center dark:text-white">{faculty.journalPublications}</TableCell>
-                  <TableCell className="text-center dark:text-white">{faculty.journalsCoAuthor}</TableCell>
-                  <TableCell className="text-center dark:text-white">{faculty.studentPublications}</TableCell>
-                  <TableCell className="text-center dark:text-white">{faculty.bookPublications}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.rdproposalssangsation ?? ''}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.rdproposalssubmition ?? ''}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.academicpasspercentage ?? '90%'}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.effectivementoring ?? 'Yes'}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.rdfunding}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.journalpublications}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.journalscoauthor}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.studentpublications}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.bookpublications}</TableCell>
                   <TableCell className="text-center font-semibold text-success dark:text-white">
                     {faculty.patents}
                   </TableCell>
-                  <TableCell className="text-center dark:text-white">{faculty.onlineCertifications}</TableCell>
-                  <TableCell className="text-center dark:text-white">{faculty.studentProjects}</TableCell>
-                  <TableCell className="text-center dark:text-white">{faculty.industryCollabs}</TableCell>
-                  <TableCell className="text-center dark:text-white">{faculty.otherActivities}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.onlinecertifications}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.studentprojects}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.fdpworks}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.fdpworps}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.industrycollabs}</TableCell>
+                  <TableCell className="text-center dark:text-white">{faculty.otheractivities}</TableCell>
                   <TableCell className="text-center dark:text-white">
                     <div className="flex gap-2 justify-center">
-                      {onViewDetails && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onViewDetails(faculty)}
-                          className="h-8 w-8 p-0"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleViewGraph(faculty)}
+                        className="h-8 w-8 p-0 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                        title="View Individual Graph"
+                      >
+                        <BarChart3 className="w-4 h-4" />
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>

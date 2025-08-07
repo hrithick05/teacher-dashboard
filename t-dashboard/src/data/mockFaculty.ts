@@ -1,302 +1,108 @@
 import { FacultyMember, AchievementType } from '../types/faculty';
+import { createClient } from '@supabase/supabase-js';
 
-export const mockFacultyData: FacultyMember[] = [
-  {
-    id: 'CSE001',
-    name: 'Dr. G.Vinoth Chakaravarthy',
-    designation: 'Head of Department',
-    department: 'Computer Science',
-    rdProposalsSangsation: 6,
-    rdProposalsSubmition: 6,
-    rdProposals: 12,
-    rdFunding: 90,
-    journalPublications: 12,
-    journalsCoAuthor: 92,
-    studentPublications: 8,
-    bookPublications: 8,
-    patents: 58,
-    onlineCertifications: 29,
-    studentProjects: 58,
-    fdpWorks: 58,
-    fdpWorps: 58,
-    industryCollabs: 29,
-    otherActivities: 15,
-    academicPassPercentage: '90%',
-    effectiveMentoring: 'Yes'
-  },
-  {
-    id: 'CSE002',
-    name: 'Dr.A.M.Rajeshwari',
-    designation: 'Associate Professor',
-    department: 'Computer Science',
-    rdProposalsSangsation: 4,
-    rdProposalsSubmition: 4,
-    rdProposals: 8,
-    rdFunding: 75,
-    journalPublications: 15,
-    journalsCoAuthor: 65,
-    studentPublications: 12,
-    bookPublications: 4,
-    patents: 42,
-    onlineCertifications: 35,
-    studentProjects: 45,
-    fdpWorks: 62,
-    fdpWorps: 48,
-    industryCollabs: 18,
-    otherActivities: 22,
-    academicPassPercentage: '90%',
-    effectiveMentoring: 'Yes'
-  },
-  {
-    id: 'CSE003',
-    name: 'Dr.V.Akilandeswari',
-    designation: 'Associate Professor',
-    department: 'Computer Science',
-    rdProposalsSangsation: 3,
-    rdProposalsSubmition: 3,
-    rdProposals: 6,
-    rdFunding: 45,
-    journalPublications: 18,
-    journalsCoAuthor: 78,
-    studentPublications: 6,
-    bookPublications: 12,
-    patents: 24,
-    onlineCertifications: 18,
-    studentProjects: 32,
-    fdpWorks: 55,
-    fdpWorps: 41,
-    industryCollabs: 8,
-    otherActivities: 19,
-    academicPassPercentage: '90%',
-    effectiveMentoring: 'Yes'
-  },
-  {
-    id: 'CSE004',
-    name: 'Dr.S.Senthil Kumar',
-    designation: 'Associate Professor',
-    department: 'Computer Science',
-    rdProposalsSangsation: 7,
-    rdProposalsSubmition: 7,
-    rdProposals: 14,
-    rdFunding: 120,
-    journalPublications: 22,
-    journalsCoAuthor: 85,
-    studentPublications: 15,
-    bookPublications: 6,
-    patents: 68,
-    onlineCertifications: 42,
-    studentProjects: 78,
-    fdpWorks: 72,
-    fdpWorps: 65,
-    industryCollabs: 35,
-    otherActivities: 28,
-    academicPassPercentage: '90%',
-    effectiveMentoring: 'Yes'
-  },
-  {
-    id: 'CSE005',
-    name: 'Dr. Lisa Thompson',
-    designation: 'Assistant Professor',
-    department: 'Computer Science',
-    rdProposals: 10,
-    rdFunding: 85,
-    journalPublications: 16,
-    journalsCoAuthor: 72,
-    studentPublications: 9,
-    bookPublications: 7,
-    patents: 52,
-    onlineCertifications: 28,
-    studentProjects: 48,
-    fdpWorks: 58,
-    fdpWorps: 44,
-    industryCollabs: 22,
-    otherActivities: 16,
-    academicPassPercentage: '90%',
-    effectiveMentoring: 'Yes'
-  },
-  {
-    id: 'CSE006',
-    name: 'Prof. James Wilson',
-    designation: 'Assistant Professor',
-    department: 'Computer Science',
-    rdProposals: 7,
-    rdFunding: 55,
-    journalPublications: 14,
-    journalsCoAuthor: 68,
-    studentPublications: 11,
-    bookPublications: 9,
-    patents: 38,
-    onlineCertifications: 25,
-    studentProjects: 42,
-    fdpWorks: 48,
-    fdpWorps: 38,
-    industryCollabs: 15,
-    otherActivities: 21,
-    academicPassPercentage: '90%',
-    effectiveMentoring: 'Yes'
-  },
-  {
-    id: 'CSE007',
-    name: 'Dr. Maria Garcia',
-    designation: 'Assistant Professor',
-    department: 'Computer Science',
-    rdProposals: 5,
-    rdFunding: 38,
-    journalPublications: 11,
-    journalsCoAuthor: 56,
-    studentPublications: 7,
-    bookPublications: 15,
-    patents: 18,
-    onlineCertifications: 32,
-    studentProjects: 28,
-    fdpWorks: 42,
-    fdpWorps: 35,
-    industryCollabs: 12,
-    otherActivities: 25,
-    academicPassPercentage: '90%',
-    effectiveMentoring: 'Yes'
-  },
-  {
-    id: 'CSE008',
-    name: 'Prof. Robert Lee',
-    designation: 'Assistant Professor',
-    department: 'Computer Science',
-    rdProposals: 13,
-    rdFunding: 95,
-    journalPublications: 19,
-    journalsCoAuthor: 88,
-    studentPublications: 14,
-    bookPublications: 5,
-    patents: 72,
-    onlineCertifications: 38,
-    studentProjects: 65,
-    fdpWorks: 68,
-    fdpWorps: 58,
-    industryCollabs: 42,
-    otherActivities: 18,
-    academicPassPercentage: '90%',
-    effectiveMentoring: 'Yes'
-  },
-  {
-    id: 'CSE009',
-    name: 'Dr. Jennifer Brown',
-    designation: 'Assistant Professor',
-    department: 'Computer Science',
-    rdProposals: 4,
-    rdFunding: 28,
-    journalPublications: 13,
-    journalsCoAuthor: 45,
-    studentPublications: 5,
-    bookPublications: 18,
-    patents: 12,
-    onlineCertifications: 22,
-    studentProjects: 25,
-    fdpWorks: 35,
-    fdpWorps: 28,
-    industryCollabs: 6,
-    otherActivities: 32,
-    academicPassPercentage: '90%',
-    effectiveMentoring: 'Yes'
-  },
-  {
-    id: 'CSE010',
-    name: 'Prof. Thomas Anderson',
-    designation: 'Assistant Professor',
-    department: 'Computer Science',
-    rdProposals: 11,
-    rdFunding: 78,
-    journalPublications: 17,
-    journalsCoAuthor: 82,
-    studentPublications: 13,
-    bookPublications: 3,
-    patents: 58,
-    onlineCertifications: 45,
-    studentProjects: 55,
-    fdpWorks: 62,
-    fdpWorps: 52,
-    industryCollabs: 28,
-    otherActivities: 14,
-    academicPassPercentage: '90%',
-    effectiveMentoring: 'Yes'
-  },
-  {
-    id: 'CSE011',
-    name: 'Dr. Rachel Green',
-    designation: 'Assistant Professor',
-    department: 'Computer Science',
-    rdProposals: 9,
-    rdFunding: 65,
-    journalPublications: 15,
-    journalsCoAuthor: 71,
-    studentPublications: 10,
-    bookPublications: 8,
-    patents: 35,
-    onlineCertifications: 28,
-    studentProjects: 38,
-    fdpWorks: 45,
-    fdpWorps: 42,
-    industryCollabs: 18,
-    otherActivities: 26,
-    academicPassPercentage: '90%',
-    effectiveMentoring: 'Yes'
-  },
-  {
-    id: 'CSE012',
-    name: 'Prof. Kevin Martinez',
-    designation: 'Assistant Professor',
-    department: 'Computer Science',
-    rdProposals: 6,
-    rdFunding: 42,
-    journalPublications: 12,
-    journalsCoAuthor: 58,
-    studentPublications: 8,
-    bookPublications: 11,
-    patents: 28,
-    onlineCertifications: 26,
-    studentProjects: 32,
-    fdpWorks: 38,
-    fdpWorps: 32,
-    industryCollabs: 14,
-    otherActivities: 23,
-    academicPassPercentage: '90%',
-    effectiveMentoring: 'Yes'
-  },
-  {
-    id: 'TARGET',
-    name: 'Target',
-    designation: 'Head of Department',
-    department: 'All',
-    rdProposals: 12,
-    rdFunding: 90,
-    journalPublications: 12,
-    journalsCoAuthor: 92,
-    studentPublications: 8,
-    bookPublications: 8,
-    patents: 58,
-    onlineCertifications: 29,
-    studentProjects: 58,
-    fdpWorks: 58,
-    fdpWorps: 58,
-    industryCollabs: 58,
-    otherActivities: 29,
-    academicPassPercentage: '90%',
-    effectiveMentoring: 'Yes'
-  }
-];
+// Supabase configuration
+const SUPABASE_URL = 'https://yfcukflinfinmjvllwin.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmY3VrZmxpbmZpbm1qdmxsd2luIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjYzNzIsImV4cCI6MjA2OTk0MjM3Mn0.JtFF_xnwjHtb8WnzbWxAJS5gNyv0u_WI7NgPBGoDJE4';
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// Achievement types configuration
 export const achievementTypes: AchievementType[] = [
-  { key: 'rdProposals', label: 'R&D Proposals', shortLabel: 'R&D Prop' },
-  { key: 'rdFunding', label: 'R&D Funding', shortLabel: 'R&D Fund' },
-  { key: 'journalPublications', label: 'Journal Publications', shortLabel: 'Journals' },
-
-  { key: 'journalsCoAuthor', label: 'Co-Author Journals', shortLabel: 'Co-Author' },
-  { key: 'studentPublications', label: 'Student Publications', shortLabel: 'Student Pub' },
-  { key: 'bookPublications', label: 'Book Publications', shortLabel: 'Books' },
+  { key: 'rdproposalssangsation', label: 'R&D Proposals (Sangsation)', shortLabel: 'R&D Sangsation' },
+  { key: 'rdproposalssubmition', label: 'R&D Proposals (Submition)', shortLabel: 'R&D Submition' },
+  { key: 'rdfunding', label: 'R&D Funding', shortLabel: 'R&D Fund' },
+  { key: 'journalpublications', label: 'Journal Publications', shortLabel: 'Journals' },
+  { key: 'journalscoauthor', label: 'Co-Author Journals', shortLabel: 'Co-Author' },
+  { key: 'studentpublications', label: 'Student Publications', shortLabel: 'Student Pub' },
+  { key: 'bookpublications', label: 'Book Publications', shortLabel: 'Books' },
   { key: 'patents', label: 'Patents', shortLabel: 'Patents' },
-  { key: 'onlineCertifications', label: 'Online Certifications', shortLabel: 'Certs' },
-  { key: 'studentProjects', label: 'Student Projects', shortLabel: 'Projects' },
-  { key: 'fdpWorks', label: 'FDP Works', shortLabel: 'FDP Works' },
-  { key: 'fdpWorps', label: 'FDP Worps', shortLabel: 'FDP Worps' },
-  { key: 'industryCollabs', label: 'Industry Collaborations', shortLabel: 'Industry' },
-  { key: 'otherActivities', label: 'Other Activities', shortLabel: 'Others' }
+  { key: 'onlinecertifications', label: 'Online Certifications', shortLabel: 'Certs' },
+  { key: 'studentprojects', label: 'Student Projects', shortLabel: 'Projects' },
+  { key: 'fdpworks', label: 'FDP Works', shortLabel: 'FDP Works' },
+  { key: 'fdpworps', label: 'FDP Worps', shortLabel: 'FDP Worps' },
+  { key: 'industrycollabs', label: 'Industry Collaborations', shortLabel: 'Industry' },
+  { key: 'otheractivities', label: 'Other Activities', shortLabel: 'Others' }
 ];
+
+// Function to fetch faculty data from Supabase
+export async function fetchFacultyData(): Promise<FacultyMember[]> {
+  try {
+    console.log('Fetching faculty data from Supabase...');
+    console.log('Supabase URL:', SUPABASE_URL);
+    console.log('Supabase Anon Key:', SUPABASE_ANON_KEY.substring(0, 20) + '...');
+    
+    const { data, error } = await supabase.from('faculty').select('*');
+    
+    if (error) {
+      console.error('Error fetching faculty data:', error);
+      return [];
+    }
+    
+    console.log('Faculty data fetched successfully:', data?.length, 'records');
+    console.log('First record sample:', data?.[0]);
+    return data || [];
+  } catch (error) {
+    console.error('Exception fetching faculty data:', error);
+    return [];
+  }
+}
+
+// Test function to verify Supabase connection
+export async function testSupabaseConnection(): Promise<boolean> {
+  try {
+    console.log('Testing Supabase connection...');
+    const { data, error } = await supabase.from('faculty').select('count').limit(1);
+    
+    if (error) {
+      console.error('Supabase connection test failed:', error);
+      return false;
+    }
+    
+    console.log('Supabase connection test successful');
+    return true;
+  } catch (error) {
+    console.error('Supabase connection test exception:', error);
+    return false;
+  }
+}
+
+// Function to fetch a single faculty member by ID
+export async function fetchFacultyById(id: string): Promise<FacultyMember | null> {
+  try {
+    const { data, error } = await supabase
+      .from('faculty')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      console.error('Error fetching faculty by ID:', error);
+      return null;
+    }
+    return data;
+  } catch (error) {
+    console.error('Exception fetching faculty by ID:', error);
+    return null;
+  }
+}
+
+// Function to update faculty data
+export async function updateFacultyData(faculty: FacultyMember): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('faculty')
+      .upsert(faculty);
+    
+    if (error) {
+      console.error('Error updating faculty data:', error);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error('Exception updating faculty data:', error);
+    return false;
+  }
+}
+
+// Legacy export for backward compatibility (will be removed)
+export const mockFacultyData: FacultyMember[] = [];

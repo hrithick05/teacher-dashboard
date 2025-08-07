@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts';
-import { mockFacultyData, achievementTypes } from '../data/mockFaculty';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LabelList, Cell } from 'recharts';
+import { achievementTypes, fetchFacultyData } from '../data/mockFaculty';
 
 // Helper to calculate total achievements for a faculty member
 const getTotalAchievements = (faculty) => {
@@ -20,12 +20,19 @@ const getInitials = (name) => {
     .toUpperCase();
 };
 
-// Badge for top 3
+// Vibrant color palette for dopamine-inducing design
+const vibrantColors = [
+  '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+  '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+  '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D7BDE2'
+];
+
+// Badge for top 3 with enhanced styling
 const RankBadge = ({ rank }) => {
   const colors = [
-    'bg-gradient-to-r from-yellow-400 to-yellow-200 text-yellow-900', // 1st
-    'bg-gradient-to-r from-gray-400 to-gray-200 text-gray-900',      // 2nd
-    'bg-gradient-to-r from-orange-400 to-orange-200 text-orange-900' // 3rd
+    'bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-200 text-yellow-900 shadow-lg', // 1st
+    'bg-gradient-to-r from-gray-300 via-gray-200 to-gray-100 text-gray-900 shadow-lg',      // 2nd
+    'bg-gradient-to-r from-orange-400 via-orange-300 to-orange-200 text-orange-900 shadow-lg' // 3rd
   ];
   let content = '';
   if (rank === 1) content = '🥇';
@@ -33,117 +40,185 @@ const RankBadge = ({ rank }) => {
   else if (rank === 3) content = '🥉';
   else content = `#${rank}`;
   return (
-    <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-bold shadow ${colors[rank - 1] || 'bg-blue-200 text-blue-900'}`}>{content}</span>
+    <span className={`ml-2 px-3 py-1 rounded-full text-sm font-bold shadow-lg transform hover:scale-110 transition-all duration-200 ${colors[rank - 1] || 'bg-gradient-to-r from-blue-400 to-purple-500 text-white'}`}>{content}</span>
   );
 };
 
 const TopPerformer = () => {
+  const [facultyData, setFacultyData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  // Exclude the 'Target' row
-  const facultyList = mockFacultyData.filter(f => f.id !== 'TARGET');
-  // Calculate total achievements for each faculty
-  const rankedFaculty = facultyList
+
+  useEffect(() => {
+    async function loadFacultyData() {
+      try {
+        setLoading(true);
+        const data = await fetchFacultyData();
+        if (data && data.length > 0) {
+          // Exclude the 'Target' row
+          const facultyList = data.filter(f => f.id !== 'TARGET');
+          setFacultyData(facultyList);
+        }
+      } catch (error) {
+        console.error('Error loading faculty data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    loadFacultyData();
+  }, []);
+
+  // Calculate rankings
+  const facultyWithRankings = facultyData
     .map(faculty => ({
       ...faculty,
       totalAchievements: getTotalAchievements(faculty)
     }))
-    .sort((a, b) => b.totalAchievements - a.totalAchievements);
+    .sort((a, b) => b.totalAchievements - a.totalAchievements)
+    .map((faculty, index) => ({
+      ...faculty,
+      rank: index + 1
+    }));
 
-  // Prepare data for the bar chart (top 10 for clarity, or all if fewer)
-  const chartData = rankedFaculty.map(faculty => ({
-    name: faculty.name, // Use full name for clarity and to avoid missing labels
-    total: faculty.totalAchievements
+  const topPerformers = facultyWithRankings.slice(0, 10);
+
+  // Prepare chart data with colors
+  const chartData = topPerformers.map((faculty, index) => ({
+    name: faculty.name,
+    total: faculty.totalAchievements,
+    color: vibrantColors[index % vibrantColors.length]
   }));
 
-  // Top performer for highlighting
-  const topPerformer = rankedFaculty[0];
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 dark:from-gray-900 dark:via-purple-900 dark:to-blue-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-4 border-purple-500 border-t-transparent mx-auto"></div>
+          <p className="mt-4 text-purple-700 dark:text-purple-300 font-semibold">Loading top performers...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-blue-200 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 py-10 px-2">
-      <div className="w-full max-w-4xl bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-800 dark:to-blue-600 p-8 flex items-center gap-6">
-          <div className="flex-shrink-0 w-24 h-24 rounded-full bg-white/30 flex items-center justify-center text-5xl font-extrabold text-white shadow-lg border-4 border-blue-300 dark:border-blue-600">
-            {getInitials(topPerformer.name)}
-          </div>
-          <div>
-            <h2 className="text-3xl font-extrabold text-white mb-1 flex items-center">
-              Top Performer: {topPerformer.name}
-              <RankBadge rank={1} />
-            </h2>
-            <div className="text-blue-100 text-lg font-medium">{topPerformer.designation} - {topPerformer.department}</div>
-            <div className="mt-2 text-white/90 font-semibold">Total Achievements: <span className="text-yellow-200 text-2xl">{topPerformer.totalAchievements}</span></div>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 dark:from-gray-900 dark:via-purple-900 dark:to-blue-900 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header with enhanced styling */}
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent mb-2">
+            🏆 Top Performers
+          </h1>
+          <p className="text-purple-700 dark:text-purple-300 text-lg">Faculty members with the highest total achievements</p>
         </div>
-        {/* Chart Section */}
-        <div className="p-8 bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
-          <h4 className="text-xl font-bold mb-4 text-blue-700 dark:text-blue-200">Faculty Achievement Rankings</h4>
+
+        {/* Top 10 Chart with enhanced styling */}
+        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-2xl mb-8 border border-purple-200 dark:border-purple-700">
+          <h2 className="text-2xl font-bold text-center mb-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            📊 Achievement Rankings
+          </h2>
           <div className="w-full h-96">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} layout="vertical" margin={{ top: 20, right: 30, left: 40, bottom: 5 }}>
-                <XAxis type="number" tick={{ fontSize: 14, fill: '#1976d2' }} />
+                <XAxis 
+                  type="number" 
+                  tick={{ fontSize: 14, fill: '#8B5CF6' }} 
+                  axisLine={{ stroke: '#8B5CF6', strokeWidth: 2 }}
+                />
                 <YAxis 
                   dataKey="name" 
                   type="category" 
-                  tick={{ fontSize: 14, fill: '#1976d2', overflow: 'visible' }} 
+                  tick={{ fontSize: 14, fill: '#8B5CF6', fontWeight: 'bold' }} 
                   width={220} 
                   interval={0} 
+                  axisLine={{ stroke: '#8B5CF6', strokeWidth: 2 }}
                 />
-                <Tooltip wrapperStyle={{ fontSize: 14 }} />
-                <Legend wrapperStyle={{ fontSize: 16 }} />
-                <Bar dataKey="total" fill="#1976d2" radius={[0, 16, 16, 0]}
+                <Tooltip 
+                  wrapperStyle={{ 
+                    fontSize: 14,
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    border: '2px solid #8B5CF6',
+                    borderRadius: '12px',
+                    boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3)'
+                  }}
+                  contentStyle={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    border: 'none',
+                    borderRadius: '12px'
+                  }}
+                />
+                <Legend wrapperStyle={{ fontSize: 16, fontWeight: 'bold' }} />
+                <Bar 
+                  dataKey="total" 
+                  radius={[0, 16, 16, 0]}
                   isAnimationActive={true}
-                  label={{ position: 'right', fill: '#1976d2', fontWeight: 'bold' }}
+                  animationDuration={1500}
+                  animationEasing="ease-out"
                 >
-                  <LabelList dataKey="total" position="right" style={{ fill: '#1976d2', fontWeight: 'bold' }} />
+                  {chartData.map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={entry.color}
+                      stroke={entry.color}
+                      strokeWidth={2}
+                    />
+                  ))}
+                  <LabelList 
+                    dataKey="total" 
+                    position="right" 
+                    style={{ 
+                      fill: '#8B5CF6', 
+                      fontWeight: 'bold',
+                      fontSize: '14px'
+                    }} 
+                  />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
-          {/* Ranking Table */}
-          <div className="mt-8">
-            <h5 className="text-lg font-semibold mb-2 text-blue-700 dark:text-blue-200">Ranking List</h5>
-            <ol className="space-y-3">
-              {rankedFaculty.map((faculty, idx) => (
-                <li
-                  key={faculty.id}
-                  className={`flex items-center gap-4 p-4 rounded-xl transition-all duration-200 shadow-md cursor-pointer group
-                    ${idx === 0 ? 'bg-gradient-to-r from-yellow-200 via-yellow-100 to-white dark:from-yellow-900/40 dark:via-yellow-800/40 dark:to-gray-900 font-bold text-yellow-900 dark:text-yellow-100 border-2 border-yellow-300 dark:border-yellow-700' :
-                      idx === 1 ? 'bg-gradient-to-r from-gray-200 via-gray-100 to-white dark:from-gray-700/40 dark:via-gray-800/40 dark:to-gray-900 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700' :
-                      idx === 2 ? 'bg-gradient-to-r from-orange-200 via-orange-100 to-white dark:from-orange-900/40 dark:via-orange-800/40 dark:to-gray-900 text-orange-900 dark:text-orange-100 border border-orange-300 dark:border-orange-700' :
-                      'bg-blue-50 dark:bg-gray-800 text-blue-800 dark:text-blue-200 border border-blue-100 dark:border-gray-700'}
-                    hover:scale-[1.025] hover:shadow-xl`}
-                >
-                  <span className="w-8 text-center text-lg font-bold">
-                    {idx + 1}
-                    <RankBadge rank={idx + 1} />
-                  </span>
-                  <span className="w-12 h-12 rounded-full bg-blue-200 dark:bg-blue-700 flex items-center justify-center font-bold text-blue-900 dark:text-white text-xl shadow">
-                    {getInitials(faculty.name)}
-                  </span>
-                  <span
-                    className="flex-1 text-lg hover:underline hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer"
-                    onClick={() => navigate(`/faculty-stats/${faculty.id}`)}
-                  >
+        </div>
+
+        {/* Ranking List with enhanced styling */}
+        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
+          <h3 className="text-2xl font-bold text-center mb-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            🎯 Detailed Rankings
+          </h3>
+          <div className="grid gap-4">
+            {facultyWithRankings.map((faculty, idx) => (
+              <div
+                key={faculty.id}
+                className={`flex items-center gap-4 p-6 rounded-2xl transition-all duration-300 shadow-lg cursor-pointer group transform hover:scale-105 hover:shadow-2xl
+                  ${idx === 0 ? 'bg-gradient-to-r from-yellow-200 via-yellow-100 to-yellow-50 dark:from-yellow-900/40 dark:via-yellow-800/40 dark:to-yellow-700/40 font-bold text-yellow-900 dark:text-yellow-100 border-2 border-yellow-300 dark:border-yellow-700 shadow-yellow-200/50' :
+                    idx === 1 ? 'bg-gradient-to-r from-gray-200 via-gray-100 to-gray-50 dark:from-gray-700/40 dark:via-gray-800/40 dark:to-gray-700/40 text-gray-900 dark:text-gray-100 border-2 border-gray-300 dark:border-gray-700 shadow-gray-200/50' :
+                    idx === 2 ? 'bg-gradient-to-r from-orange-200 via-orange-100 to-orange-50 dark:from-orange-900/40 dark:via-orange-800/40 dark:to-orange-700/40 text-orange-900 dark:text-orange-100 border-2 border-orange-300 dark:border-orange-700 shadow-orange-200/50' :
+                    'bg-gradient-to-r from-purple-100 via-pink-100 to-blue-100 dark:from-purple-800/40 dark:via-pink-800/40 dark:to-blue-800/40 text-purple-800 dark:text-purple-200 border-2 border-purple-200 dark:border-purple-700 shadow-purple-200/50'}`}
+                onClick={() => navigate(`/faculty-stats/${faculty.id}`)}
+              >
+                <div className="w-16 text-center text-lg font-bold">
+                  <RankBadge rank={idx + 1} />
+                </div>
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 dark:from-purple-600 dark:to-pink-600 flex items-center justify-center font-bold text-white text-xl shadow-lg transform group-hover:scale-110 transition-transform duration-200">
+                  {getInitials(faculty.name)}
+                </div>
+                <div className="flex-1">
+                  <div className="text-lg font-semibold group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors duration-200">
                     {faculty.name}
-                  </span>
-                  <span className="font-mono text-base">{faculty.totalAchievements}</span>
-                </li>
-              ))}
-            </ol>
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    {faculty.designation} - {faculty.department}
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    {faculty.totalAchievements}
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Total</div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
-      {/* Animations */}
-      <style>{`
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-          animation: fadeInUp 0.7s cubic-bezier(.39,.575,.565,1) both;
-        }
-      `}</style>
     </div>
   );
 };

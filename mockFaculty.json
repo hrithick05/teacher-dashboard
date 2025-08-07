@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Dr. Alice Johnson",
+    "department": "Computer Science",
+    "email": "alice.johnson@university.edu",
+    "phone": "+1-555-1234",
+    "title": "Associate Professor",
+    "office": "Room 201, CS Building"
+  },
+  {
+    "name": "Prof. Bob Smith",
+    "department": "Mathematics",
+    "email": "bob.smith@university.edu",
+    "phone": "+1-555-5678",
+    "title": "Professor",
+    "office": "Room 305, Math Building"
+  },
+  {
+    "name": "Dr. Carol Lee",
+    "department": "Physics",
+    "email": "carol.lee@university.edu",
+    "phone": "+1-555-8765",
+    "title": "Assistant Professor",
+    "office": "Room 110, Physics Building"
+  },
+  {
+    "name": "Dr. David Kim",
+    "department": "Chemistry",
+    "email": "david.kim@university.edu",
+    "phone": "+1-555-4321",
+    "title": "Lecturer",
+    "office": "Room 220, Chemistry Building"
+  },
+  {
+    "name": "Prof. Emma Brown",
+    "department": "Biology",
+    "email": "emma.brown@university.edu",
+    "phone": "+1-555-3344",
+    "title": "Professor",
+    "office": "Room 150, Biology Building"
+  }
+]

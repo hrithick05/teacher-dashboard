@@ -1,5 +1,4 @@
 import LoginForm from '../components/LoginForm';
-import { mockFacultyData } from '../data/mockFaculty';
 import { useNavigate } from 'react-router-dom';
 
 const FacultyLogin = () => {
@@ -9,7 +8,7 @@ const FacultyLogin = () => {
     navigate(`/faculty-details/${faculty.id}`);
   };
   return (
-    <LoginForm facultyData={mockFacultyData} onLogin={handleLogin} />
+    <LoginForm onLogin={handleLogin} />
   );
 };
 

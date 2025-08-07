@@ -5,7 +5,10 @@
 // {
 //   id: '',
 //   name: '',
+//   designation: '',
 //   department: '',
+//   rdProposalsSangsation: 0,
+//   rdProposalsSubmition: 0,
 //   rdProposals: 0,
 //   rdFunding: 0,
 //   journalPublications: 0,
@@ -19,6 +22,8 @@
 //   fdpWorps: 0,
 //   industryCollabs: 0,
 //   otherActivities: 0,
+//   academicPassPercentage: '',
+//   effectiveMentoring: '',
 // }
 
 // Example AchievementType object structure:

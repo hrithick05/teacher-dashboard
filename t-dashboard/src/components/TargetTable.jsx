@@ -15,8 +15,12 @@ const TargetTable = ({ target }) => {
             <TableHeader>
               <TableRow className="bg-tableHeader">
                 <TableHead className="font-semibold dark:text-white">Faculty Name</TableHead>
+                <TableHead className="font-semibold dark:text-white">Designation</TableHead>
                 <TableHead className="font-semibold dark:text-white">Department</TableHead>
-                <TableHead className="font-semibold text-center dark:text-white">R&D Proposals</TableHead>
+                <TableHead className="font-semibold text-center dark:text-white">R&D Proposals (Sangsation)</TableHead>
+                <TableHead className="font-semibold text-center dark:text-white">R&D Proposals (Submition)</TableHead>
+                <TableHead className="font-semibold text-center dark:text-white">Academic Pass %</TableHead>
+                <TableHead className="font-semibold text-center dark:text-white">Effective Mentoring</TableHead>
                 <TableHead className="font-semibold text-center dark:text-white">R&D Funding</TableHead>
                 <TableHead className="font-semibold text-center dark:text-white">Journal Publications</TableHead>
                 <TableHead className="font-semibold text-center dark:text-white">Co-Author Journals</TableHead>
@@ -25,6 +29,8 @@ const TargetTable = ({ target }) => {
                 <TableHead className="font-semibold text-center dark:text-white">Patents</TableHead>
                 <TableHead className="font-semibold text-center dark:text-white">Online Certifications</TableHead>
                 <TableHead className="font-semibold text-center dark:text-white">Student Projects</TableHead>
+                <TableHead className="font-semibold text-center dark:text-white">FDP Works</TableHead>
+                <TableHead className="font-semibold text-center dark:text-white">FDP Worps</TableHead>
                 <TableHead className="font-semibold text-center dark:text-white">Industry Collaborations</TableHead>
                 <TableHead className="font-semibold text-center dark:text-white">Other Activities</TableHead>
               </TableRow>
@@ -32,18 +38,24 @@ const TargetTable = ({ target }) => {
             <TableBody>
               <TableRow className="bg-accent/10">
                 <TableCell className="font-medium font-bold dark:text-white">{target.name}</TableCell>
+                <TableCell className="dark:text-white">{target.designation}</TableCell>
                 <TableCell className="dark:text-white">{target.department}</TableCell>
-                <TableCell className="text-center dark:text-white">{target.rdProposals}</TableCell>
-                <TableCell className="text-center dark:text-white">{target.rdFunding}</TableCell>
-                <TableCell className="text-center dark:text-white">{target.journalPublications}</TableCell>
-                <TableCell className="text-center dark:text-white">{target.journalsCoAuthor}</TableCell>
-                <TableCell className="text-center dark:text-white">{target.studentPublications}</TableCell>
-                <TableCell className="text-center dark:text-white">{target.bookPublications}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.rdproposalssangsation || '-'}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.rdproposalssubmition || '-'}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.academicpasspercentage || '-'}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.effectivementoring || '-'}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.rdfunding}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.journalpublications}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.journalscoauthor}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.studentpublications}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.bookpublications}</TableCell>
                 <TableCell className="text-center dark:text-white">{target.patents}</TableCell>
-                <TableCell className="text-center dark:text-white">{target.onlineCertifications}</TableCell>
-                <TableCell className="text-center dark:text-white">{target.studentProjects}</TableCell>
-                <TableCell className="text-center dark:text-white">{target.industryCollabs}</TableCell>
-                <TableCell className="text-center dark:text-white">{target.otherActivities}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.onlinecertifications}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.studentprojects}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.fdpworks}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.fdpworps}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.industrycollabs}</TableCell>
+                <TableCell className="text-center dark:text-white">{target.otheractivities}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
